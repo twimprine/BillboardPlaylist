@@ -1,0 +1,7 @@
+*secrets.py
+*.exe
+*venv/*
+*.idea/*
+*node_modules/*
+*.log
+package-lock.json

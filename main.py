@@ -4,6 +4,7 @@ import requests
 from requests_html import HTMLSession
 from datetime import date
 import datetime
+from secrets import spotify_token, spotify_user_id
 
 url = 'https://www.billboard.com/charts/hot-100'
 
@@ -13,9 +14,10 @@ songs = []
 artists = []
 ranks = []
 
-today = datetime.datetime.today()
+lastWeek = datetime.datetime.today() - datetime.timedelta(days=7)
 startDateobj = datetime.datetime.strptime('January 30, 2020', '%B %d, %Y')
 pageDateobj = startDateobj
+
 
 
 # ====================== FUNCTIONS =================
@@ -25,9 +27,6 @@ def get_weeks_list():
         song = a.find_next('span', attrs={'class': 'chart-element__information__song'})
         artist = a.find_next('span', attrs={'class': 'chart-element__information__artist'})
         rank = a.find_next('span', attrs={'class': 'chart-element__rank__number'})
-        #print(rank)
-        #print(song)
-        #print(artist)
         if int(rank.text) < 10:
             songs.append(song.text)
             artists.append(artist.text)
@@ -35,11 +34,12 @@ def get_weeks_list():
     return pd.DataFrame({'Song': songs, 'Artist': artists, 'Rank': ranks})
 
 
+
 # ================ Not Function WORK ====================
 
 df = pd.DataFrame({'Song': songs, 'Artist': artists, 'Rank': ranks})
 
-while pageDateobj < today:
+while pageDateobj < lastWeek:
     url = origURL + str(pageDateobj.date())
     print(url)
 
